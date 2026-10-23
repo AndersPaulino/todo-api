@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,5 +36,15 @@ public class TarefaService {
     @Transactional(readOnly = true)
     public List<Tarefa> findByAtivo(boolean ativo){
         return tarefaRepository.findByAtivo(ativo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Tarefa> findByDiaRegistro(LocalDate registro){
+        return tarefaRepository.findByDiaRegistro(registro);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Tarefa> findByDiaAtualizar(LocalDate atualizar){
+        return tarefaRepository.findByDiaAtualizar(atualizar);
     }
 }
