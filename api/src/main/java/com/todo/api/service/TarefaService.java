@@ -32,4 +32,8 @@ public class TarefaService {
     public Tarefa findByNomeTarefa(String nome){
         return tarefaRepository.findByNomeTarefa(nome);
     }
+    @Transactional(readOnly = true)
+    public List<Tarefa> findByAtivo(boolean ativo){
+        return tarefaRepository.findByAtivo(ativo);
+    }
 }
