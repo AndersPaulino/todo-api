@@ -27,4 +27,9 @@ public class TarefaService {
     public List<Tarefa> findAll(){
         return tarefaRepository.findAll();
     }
+
+    @Transactional(readOnly = true)
+    public Tarefa findByNomeTarefa(String nome){
+        return tarefaRepository.findByNomeTarefa(nome);
+    }
 }
