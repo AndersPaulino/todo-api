@@ -4,6 +4,7 @@ import com.todo.api.entity.Tarefa;
 import com.todo.api.repository.TarefaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -46,5 +47,10 @@ public class TarefaService {
     @Transactional(readOnly = true)
     public List<Tarefa> findByDiaAtualizar(LocalDate atualizar){
         return tarefaRepository.findByDiaAtualizar(atualizar);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void cadastrar(Tarefa tarefa){
+        tarefaRepository.save(tarefa);
     }
 }
