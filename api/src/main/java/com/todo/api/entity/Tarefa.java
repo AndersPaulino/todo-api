@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_tarefa", schema = "public")
-public class Tarefa {
+public class Tarefa extends AbstractEntity{
 
     @Column(name = "cl_nome_tarefa")
     private String nome;
