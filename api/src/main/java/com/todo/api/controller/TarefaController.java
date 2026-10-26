@@ -47,6 +47,20 @@ public class TarefaController {
         }
     }
 
+    @GetMapping("/ativo/{ativo}")
+    public ResponseEntity<List<Tarefa>> findByAtivo(@PathVariable boolean ativo){
+        try {
+            List<Tarefa> tarefas = tarefaService.findByAtivo(ativo);
+            if (!tarefas.isEmpty()){
+                return ResponseEntity.ok(tarefas);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<String> cadastrar (@RequestBody Tarefa tarefa){
         try {
