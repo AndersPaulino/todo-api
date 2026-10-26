@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/tarefa")
 public class TarefaController {
-    private TarefaService tarefaService
+    private TarefaService tarefaService;
 
     @Autowired
     public TarefaController (TarefaService tarefaService){
