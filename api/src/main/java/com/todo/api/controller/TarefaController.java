@@ -63,7 +63,7 @@ public class TarefaController {
     }
 
     @GetMapping("/registro/{registro}")
-    public ResponseEntity<List<Tarefa>> findByDiaRegistro(@PathVariable("registro") LocalDate registro {
+    public ResponseEntity<List<Tarefa>> findByDiaRegistro(@PathVariable("registro") LocalDate registro) {
         try {
             List<Tarefa> tarefas = tarefaService.findByDiaRegistro(registro);
 
@@ -91,13 +91,25 @@ public class TarefaController {
         }
     }
 
-                                                          @PostMapping
+    @PostMapping
     public ResponseEntity<String> cadastrar (@RequestBody Tarefa tarefa){
         try {
             tarefaService.cadastrar(tarefa);
             return ResponseEntity.ok().body("Registro cadastrado com sucesso!");
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Tarefa tarefa) {
+        try {
+            tarefaService.atualizar(id, tarefa);
+            return ResponseEntity.ok().body("Registro atualizado com sucesso!");
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar o registro!");
         }
     }
 }
