@@ -4,10 +4,7 @@ import com.todo.api.entity.Tarefa;
 import com.todo.api.service.TarefaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/tarefa")
@@ -17,6 +14,13 @@ public class TarefaController {
     @Autowired
     public TarefaController (TarefaService tarefaService){
         this.tarefaService = tarefaService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Tarefa> findByID(@PathVariable Long id){
+        return tarefaService.findbyId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
