@@ -3,6 +3,7 @@ package com.todo.api.controller;
 import com.todo.api.entity.Tarefa;
 import com.todo.api.service.TarefaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,21 @@ public class TarefaController {
     public ResponseEntity<List<Tarefa>> findAll() {
         List<Tarefa> tarefas = tarefaService.findAll();
         return ResponseEntity.ok(tarefas);
+    }
+
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<Tarefa> findByNomeTarefa(@PathVariable String nome){
+        try {
+            Tarefa tarefa = tarefaService.findByNomeTarefa(nome);
+
+            if (tarefa != null) {
+                return ResponseEntity.ok(tarefa);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping
