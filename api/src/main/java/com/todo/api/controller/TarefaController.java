@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -61,7 +62,22 @@ public class TarefaController {
         }
     }
 
-    @PostMapping
+    @GetMapping("/registro/{registro}")
+    public ResponseEntity<List<Tarefa>> findByDiaRegistro(@PathVariable("registro") LocalDate registro {
+        try {
+            List<Tarefa> tarefas = tarefaService.findByDiaRegistro(registro);
+
+            if (!tarefas.isEmpty()) {
+                return ResponseEntity.ok(tarefas);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+                                                          @PostMapping
     public ResponseEntity<String> cadastrar (@RequestBody Tarefa tarefa){
         try {
             tarefaService.cadastrar(tarefa);
