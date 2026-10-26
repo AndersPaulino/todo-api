@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/tarefa")
 public class TarefaController {
@@ -21,6 +23,12 @@ public class TarefaController {
         return tarefaService.findbyId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Tarefa>> findAll() {
+        List<Tarefa> tarefas = tarefaService.findAll();
+        return ResponseEntity.ok(tarefas);
     }
 
     @PostMapping
