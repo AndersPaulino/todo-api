@@ -78,4 +78,16 @@ public class TarefaService {
             throw new IllegalArgumentException("ID de tarefa inválido!");
         }
     }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    public void deletar(Long id) {
+        Optional<Tarefa> tarefaOptional = tarefaRepository.findById(id);
+
+        if (tarefaOptional.isPresent()) {
+            Tarefa tarefa = tarefaOptional.get();
+            tarefa.setAtivo(false);
+        } else {
+            throw new IllegalArgumentException("ID de tarefa inválido!");
+        }
+    }
 }
