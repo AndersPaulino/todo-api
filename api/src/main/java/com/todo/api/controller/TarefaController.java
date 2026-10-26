@@ -77,6 +77,20 @@ public class TarefaController {
         }
     }
 
+    @GetMapping("/atualizar/{atualizar}")
+    public ResponseEntity<List<Tarefa>> findByDiaAtualizar(@PathVariable("atualizar") LocalDate atualizar){
+        try {
+            List<Tarefa> tarefas = tarefaService.findByDiaAtualizar(atualizar);
+            if (!tarefas.isEmpty()) {
+                return ResponseEntity.ok(tarefas);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
                                                           @PostMapping
     public ResponseEntity<String> cadastrar (@RequestBody Tarefa tarefa){
         try {
