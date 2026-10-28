@@ -12,8 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,5 +47,26 @@ public class TarefaServiceTest {
         Optional<Tarefa> tarefaOptional = tarefaService.findbyId(id);
 
         assertFalse(tarefaOptional.isPresent());
+    }
+
+    @Test
+    void testFindByAtivo() {
+        Tarefa tarefa1 = new Tarefa();
+        tarefa1.setAtivo(true);
+
+        List<Tarefa> tarefas = Stream.of(tarefa1)
+                .collect(Collectors.toList());
+
+        when(tarefaRepository.findByAtivo(true))
+                .thenReturn(tarefas);
+
+        List<Tarefa> resultado = tarefaService.findByAtivo(true);
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertSame(tarefa1, resultado.get(0));
+        assertTrue(resultado.get(0).isAtivo());
+
+        verify(tarefaRepository).findByAtivo(true);
     }
 }
