@@ -88,6 +88,30 @@ public class TarefaServiceTest {
     }
 
     @Test
+    void testFindByDiaRegistro() {
+        LocalDate registro = LocalDate.of(2026, 10, 28);
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa01");
+        tarefa.setRegistro(registro);
+
+        List<Tarefa> tarefas = List.of(tarefa);
+
+        when(tarefaRepository.findByDiaRegistro(registro))
+                .thenReturn(tarefas);
+
+        List<Tarefa> resultado =
+                tarefaService.findByDiaRegistro(registro);
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertEquals(registro, resultado.get(0).getRegistro());
+
+        verify(tarefaRepository, times(1))
+                .findByDiaRegistro(registro);
+    }
+
+    @Test
     void testFindByAtivo() {
         Tarefa tarefa1 = new Tarefa();
         tarefa1.setAtivo(true);
