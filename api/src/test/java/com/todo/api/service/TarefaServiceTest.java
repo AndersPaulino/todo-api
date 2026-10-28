@@ -79,4 +79,27 @@ public class TarefaServiceTest {
         verify(tarefaRepository, times(1)).save(tarefa);
     }
 
+    @Test
+    void testAtualizarTarefa() {
+        Tarefa tarefaExistente = new Tarefa();
+        tarefaExistente.setNome("Tarefa original");
+
+        Tarefa tarefaAtualizada = new Tarefa();
+        tarefaAtualizada.setNome("Tarefa atualizada");
+
+        when(tarefaRepository.findById(1L))
+                .thenReturn(Optional.of(tarefaExistente));
+
+        when(tarefaRepository.save(any(Tarefa.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertDoesNotThrow(
+                () -> tarefaService.atualizar(1L, tarefaAtualizada)
+        );
+
+        assertEquals("Tarefa atualizada", tarefaExistente.getNome());
+
+        verify(tarefaRepository, times(1)).findById(1L);
+        verify(tarefaRepository, times(1)).save(tarefaExistente);
+    }
 }
