@@ -112,6 +112,30 @@ public class TarefaServiceTest {
     }
 
     @Test
+    void testFindByDiaAtualizar() {
+        LocalDate atualizar = LocalDate.of(2026, 10, 28);
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa01");
+        tarefa.setAtualizar(atualizar);
+
+        List<Tarefa> tarefas = List.of(tarefa);
+
+        when(tarefaRepository.findByDiaAtualizar(atualizar))
+                .thenReturn(tarefas);
+
+        List<Tarefa> resultado =
+                tarefaService.findByDiaAtualizar(atualizar);
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertEquals(atualizar, resultado.get(0).getAtualizar());
+
+        verify(tarefaRepository, times(1))
+                .findByDiaAtualizar(atualizar);
+    }
+
+    @Test
     void testFindByAtivo() {
         Tarefa tarefa1 = new Tarefa();
         tarefa1.setAtivo(true);
