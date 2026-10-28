@@ -170,9 +170,13 @@ public class TarefaServiceTest {
     void testAtualizarTarefa() {
         Tarefa tarefaExistente = new Tarefa();
         tarefaExistente.setNome("Tarefa original");
+        tarefaExistente.setDia(LocalDate.of(2026,10,10));
+        tarefaExistente.setDescricao("Descricao origial");
 
         Tarefa tarefaAtualizada = new Tarefa();
         tarefaAtualizada.setNome("Tarefa atualizada");
+        tarefaAtualizada.setDia(LocalDate.of(2026,10,11));
+        tarefaAtualizada.setDescricao("Descricao atualizada");
 
         when(tarefaRepository.findById(1L))
                 .thenReturn(Optional.of(tarefaExistente));
@@ -185,6 +189,8 @@ public class TarefaServiceTest {
         );
 
         assertEquals("Tarefa atualizada", tarefaExistente.getNome());
+        assertEquals("Descricao atualizada", tarefaExistente.getDescricao());
+        assertEquals(LocalDate.of(2026,10,11), tarefaExistente.getDia());
 
         verify(tarefaRepository, times(1)).findById(1L);
         verify(tarefaRepository, times(1)).save(tarefaExistente);
