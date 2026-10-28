@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TarefaServiceTest {
@@ -69,4 +68,15 @@ public class TarefaServiceTest {
 
         verify(tarefaRepository).findByAtivo(true);
     }
+
+    @Test
+    void testCadastrarTarefa(){
+
+        when(tarefaRepository.save(tarefa)).thenReturn(tarefa);
+
+        assertDoesNotThrow(() -> tarefaService.cadastrar(tarefa));
+
+        verify(tarefaRepository, times(1)).save(tarefa);
+    }
+
 }
