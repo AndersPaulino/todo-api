@@ -18,7 +18,7 @@ public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
     public List<Tarefa> findByAtivo(@Param("ativo") boolean ativo);
 
     @Query("SELECT e From Tarefa e WHERE DATE(e.registro) = :registro")
-    public List<Tarefa> findByDiaRegistro(@Param("regristro")LocalDate registro);
+    public List<Tarefa> findByDiaRegistro(@Param("registro")LocalDate registro);
 
     @Query("SELECT e FROM Tarefa e WHERE DATE(e.atualizar) = :atualizar")
     public List<Tarefa> findByDiaAtualizar(@Param("atualizar")LocalDate atualizar);
