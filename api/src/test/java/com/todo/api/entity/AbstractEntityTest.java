@@ -6,8 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class AbstractEntityTest {
@@ -45,5 +46,45 @@ public class AbstractEntityTest {
         entity.preUpdate();
 
         assertNotNull(entity.getAtualizar());
+    }
+
+    @Test
+    void getIdDeveRetornarNuloInicialmente() {
+        assertNull(entity.getId());
+    }
+
+    @Test
+    void setRegistroDeveDefinirDataCorretamente() {
+        LocalDate registro = LocalDate.of(2026, 11, 11);
+
+        entity.setRegistro(registro);
+
+        assertEquals(registro, entity.getRegistro());
+    }
+
+    @Test
+    void setAtualizarDeveDefinirDataCorretamente() {
+        LocalDate atualizar = LocalDate.of(2026, 11, 12);
+
+        entity.setAtualizar(atualizar);
+
+        assertEquals(atualizar, entity.getAtualizar());
+    }
+
+    @Test
+    void prePersistDeveDefinirRegistroEAtivo() {
+        entity.prePersist();
+
+        assertNotNull(entity.getRegistro());
+        assertEquals(LocalDate.now(), entity.getRegistro());
+        assertTrue(entity.isAtivo());
+    }
+
+    @Test
+    void preUpdateDeveDefinirDataDeAtualizacao() {
+        entity.preUpdate();
+
+        assertNotNull(entity.getAtualizar());
+        assertEquals(LocalDate.now(), entity.getAtualizar());
     }
 }
