@@ -203,6 +203,9 @@ public class TarefaServiceTest {
         Tarefa tarefa = new Tarefa();
         tarefa.setNome("Tarefa atualizada");
 
+        when(tarefaRepository.findById(idInvalido))
+                .thenReturn(Optional.empty());
+
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> tarefaService.atualizar(idInvalido, tarefa)
@@ -213,7 +216,7 @@ public class TarefaServiceTest {
                 exception.getMessage()
         );
 
-        verify(tarefaRepository, never()).findById(anyLong());
+        verify(tarefaRepository, times(1)).findById(idInvalido);
         verify(tarefaRepository, never()).save(any(Tarefa.class));
     }
 
