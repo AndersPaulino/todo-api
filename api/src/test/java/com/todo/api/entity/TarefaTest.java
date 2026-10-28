@@ -1,5 +1,6 @@
 package com.todo.api.entity;
 
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,5 +28,13 @@ public class TarefaTest {
         assertNotNull(tarefa.getRegistro(),"Registro não deve ser nulo após o prePersist");
         assertEquals(LocalDate.now(), tarefa.getRegistro(), "Registro deve corresponder à data atual");
         assertTrue(tarefa.isAtivo(), "Ativo deve ser true após prePersist");
+    }
+
+    @Test
+    void testPreUpdate(){
+        LocalDate predate = tarefa.getAtualizar();
+        tarefa.preUpdate();
+        assertNotNull(tarefa.getAtualizar(),  "Atualizar mão deve ser nulo após o preUpdate");
+        assertNotEquals(predate, tarefa.getAtualizar(), "O valor de 'atualziar' deve ser diferente após preUpdate");
     }
 }
