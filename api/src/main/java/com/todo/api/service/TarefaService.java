@@ -53,4 +53,41 @@ public class TarefaService {
     public void cadastrar(Tarefa tarefa){
         tarefaRepository.save(tarefa);
     }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    public void atualizar(Long id, Tarefa tarefa) {
+
+        Optional<Tarefa> tarefa1 = tarefaRepository.findById(id);
+
+        if (tarefa1.isPresent()){
+            Tarefa tarefa2 = tarefa1.get();
+
+            if (tarefa.getNome() != null){
+                tarefa2.setNome(tarefa.getNome());
+            }
+            if (tarefa.getDescricao() != null){
+                tarefa2.setDescricao(tarefa.getDescricao());
+            }
+            if (tarefa.getDia() != null){
+                tarefa2.setDia(tarefa.getDia());
+            }
+            tarefa2.setAtualizar(LocalDate.now());
+
+            tarefaRepository.save(tarefa2);
+        } else {
+            throw new IllegalArgumentException("ID de tarefa inválido!");
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    public void deletar(Long id) {
+        Optional<Tarefa> tarefaOptional = tarefaRepository.findById(id);
+
+        if (tarefaOptional.isPresent()) {
+            Tarefa tarefa = tarefaOptional.get();
+            tarefa.setAtivo(false);
+        } else {
+            throw new IllegalArgumentException("ID de tarefa inválido!");
+        }
+    }
 }
