@@ -49,6 +49,28 @@ public class TarefaServiceTest {
     }
 
     @Test
+    void testFindAll() {
+        Tarefa tarefa1 = new Tarefa();
+        tarefa1.setNome("Tarefa01");
+
+        Tarefa tarefa2 = new Tarefa();
+        tarefa2.setNome("Tarefa02");
+
+        List<Tarefa> tarefas = List.of(tarefa1, tarefa2);
+
+        when(tarefaRepository.findAll()).thenReturn(tarefas);
+
+        List<Tarefa> resultado = tarefaService.findAll();
+
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+        assertEquals("Tarefa01", resultado.get(0).getNome());
+        assertEquals("Tarefa02", resultado.get(1).getNome());
+
+        verify(tarefaRepository, times(1)).findAll();
+    }
+
+    @Test
     void testFindByAtivo() {
         Tarefa tarefa1 = new Tarefa();
         tarefa1.setAtivo(true);
