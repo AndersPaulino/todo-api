@@ -111,4 +111,13 @@ public class TarefaServiceTest {
 
         assertFalse(tarefa.isAtivo());
     }
+
+    @Test
+    void testDeletarThrowExeceptionIdDoesNotExist(){
+        when(tarefaRepository.findById(2L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, ()-> tarefaService.deletar(2L));
+
+        assertEquals("ID de tarefa inválido!", e.getMessage());
+    }
 }
