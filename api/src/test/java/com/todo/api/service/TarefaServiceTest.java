@@ -102,4 +102,13 @@ public class TarefaServiceTest {
         verify(tarefaRepository, times(1)).findById(1L);
         verify(tarefaRepository, times(1)).save(tarefaExistente);
     }
+
+    @Test
+    void testDeletar(){
+        when(tarefaRepository.findById(1L)).thenReturn(Optional.of(tarefa));
+
+        assertDoesNotThrow(()-> tarefaService.deletar(1L));
+
+        assertFalse(tarefa.isAtivo());
+    }
 }
