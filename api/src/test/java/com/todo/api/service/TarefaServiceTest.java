@@ -197,6 +197,27 @@ public class TarefaServiceTest {
     }
 
     @Test
+    void testAtualizarTarefaIdInvalido() {
+        Long idInvalido = 0L;
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa atualizada");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> tarefaService.atualizar(idInvalido, tarefa)
+        );
+
+        assertEquals(
+                "ID de tarefa inválido!",
+                exception.getMessage()
+        );
+
+        verify(tarefaRepository, never()).findById(anyLong());
+        verify(tarefaRepository, never()).save(any(Tarefa.class));
+    }
+
+    @Test
     void testDeletar(){
         when(tarefaRepository.findById(1L)).thenReturn(Optional.of(tarefa));
 
