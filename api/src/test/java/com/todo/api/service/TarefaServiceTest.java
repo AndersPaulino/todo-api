@@ -71,6 +71,23 @@ public class TarefaServiceTest {
     }
 
     @Test
+    void testFindByNomeTarefa() {
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa01");
+
+        when(tarefaRepository.findByNomeTarefa("Tarefa01"))
+                .thenReturn(tarefa);
+
+        Tarefa resultado = tarefaService.findByNomeTarefa("Tarefa01");
+
+        assertNotNull(resultado);
+        assertEquals("Tarefa01", resultado.getNome());
+
+        verify(tarefaRepository, times(1))
+                .findByNomeTarefa("Tarefa01");
+    }
+
+    @Test
     void testFindByAtivo() {
         Tarefa tarefa1 = new Tarefa();
         tarefa1.setAtivo(true);
