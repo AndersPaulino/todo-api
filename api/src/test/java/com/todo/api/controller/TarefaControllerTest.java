@@ -10,6 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,6 +25,16 @@ public class TarefaControllerTest {
     @MockitoBean
     private TarefaService tarefaService;
 
+    @Test
+    void testFindByIdRetornoTarefa() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        Long id = 1L;
+
+        when(tarefaService.findbyId(id)).thenReturn(Optional.of(tarefa));
+
+        mockMvc.perform(get("/api/tarefa/{id}", id))
+                .andExpect(status().isOk());
+    }
     @Test
     void testFindAllRetornoListaDeTarefas() throws Exception {
         Tarefa tarefa = new Tarefa();
