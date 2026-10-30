@@ -108,4 +108,18 @@ public class TarefaControllerTest {
                 .andExpect(status().isInternalServerError());
     }
 
+    @Test
+    void testFindByAtivoRetornoListaTarefas() throws Exception {
+        Tarefa tarefa = new Tarefa();
+
+        boolean ativo = true;
+
+        when(tarefaService.findByAtivo(ativo)).thenReturn(List.of(tarefa));
+
+        mockMvc.perform(get("/api/tarefa/ativo/{ativo}", ativo))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").exists());
+    }
+
 }
