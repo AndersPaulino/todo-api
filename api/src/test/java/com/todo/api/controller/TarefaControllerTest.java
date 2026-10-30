@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @WebMvcTest(TarefaController.class)
 public class TarefaControllerTest {
@@ -307,5 +308,18 @@ public class TarefaControllerTest {
                         .content(objectMapper.writeValueAsString(tarefa)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string("Erro ao atualizar o registro!"));
+    }
+
+    @Test
+    void testDeletarRetornoSucesso() throws Exception {
+        Long id = 1L;
+
+        doNothing().when(tarefaService).deletar(id);
+
+        mockMvc.perform(delete("/api/tarefa/desativar/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Registro desativado com sucesso!"));
+
+        verify(tarefaService, times(1)).deletar(id);
     }
 }
