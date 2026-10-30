@@ -2,12 +2,10 @@ package com.todo.api.controller;
 
 import com.todo.api.entity.Tarefa;
 import com.todo.api.service.TarefaService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,6 +36,19 @@ public class TarefaControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    void testFindAllRetornoListaVazia() throws Exception {
+        when(tarefaService.findAll()).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/tarefa")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(
+                MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$.length()").value(0));
     }
 
 }
