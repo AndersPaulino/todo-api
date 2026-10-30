@@ -35,6 +35,17 @@ public class TarefaControllerTest {
         mockMvc.perform(get("/api/tarefa/{id}", id))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void testFindByIdNotFound() throws Exception {
+        Long id = 1L;
+
+        when(tarefaService.findbyId(id)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/tarefa/{id}", id))
+                .andExpect(status().isNotFound());
+    }
+
     @Test
     void testFindAllRetornoListaDeTarefas() throws Exception {
         Tarefa tarefa = new Tarefa();
