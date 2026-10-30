@@ -181,4 +181,17 @@ public class TarefaControllerTest {
         mockMvc.perform(get("/api/tarefa/registro/{registro}",registro))
                 .andExpect(status().isInternalServerError());
     }
+
+    @Test
+    void testFindByDiaAtualizarRetornoListaTarefa() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        LocalDate atualizar = LocalDate.of(2026,10,10);
+
+        when(tarefaService.findByDiaAtualizar(atualizar)).thenReturn(List.of(tarefa));
+
+        mockMvc.perform(get("/api/tarefa/atualizar/{atualizar}", atualizar))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").exists());
+    }
 }
