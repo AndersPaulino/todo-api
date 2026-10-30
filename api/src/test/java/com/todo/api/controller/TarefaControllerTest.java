@@ -205,4 +205,15 @@ public class TarefaControllerTest {
         mockMvc.perform(get("/api/tarefa/atualizar/{atualizar}", atualizar))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void testFindByDiaAtualizarInternalServerError() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        LocalDate atualizar = LocalDate.of(2026,10,10);
+
+        when(tarefaService.findByDiaAtualizar(atualizar)).thenThrow(new RuntimeException("Erro interno"));
+
+        mockMvc.perform(get("/api/tarefa/atualizar/{atualizar}",atualizar))
+                .andExpect(status().isInternalServerError());
+    }
 }
