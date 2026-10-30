@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -144,5 +145,18 @@ public class TarefaControllerTest {
 
         mockMvc.perform(get("/api/tarefa/ativo/{ativo}", ativo))
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testFindByDiaRegistroRetornoListaTarefas() throws Exception{
+        Tarefa tarefa = new Tarefa();
+        LocalDate registro = LocalDate.of(2026,10,10);
+
+        when(tarefaService.findByDiaRegistro(registro)).thenReturn(List.of(tarefa));
+
+        mockMvc.perform(get("/api/tarefa/registro/{registro}",registro))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").exists());
     }
 }
