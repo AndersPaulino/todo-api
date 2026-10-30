@@ -161,7 +161,7 @@ public class TarefaControllerTest {
     }
 
     @Test
-    void testFindByDiaRegistroNotFound()throws Exception {
+    void testFindByDiaRegistroNotFound()  throws Exception {
         Tarefa tarefa = new Tarefa();
         LocalDate registro = LocalDate.of(2026,10,10);
 
@@ -169,5 +169,16 @@ public class TarefaControllerTest {
 
         mockMvc.perform(get("/api/tarefa/registro/{registro}", registro))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testFindByDiaRegistroInternalServerError() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        LocalDate registro = LocalDate.of(2026,10,10);
+
+        when(tarefaService.findByDiaRegistro(registro)).thenThrow(new RuntimeException("Erro interno"));
+
+        mockMvc.perform(get("/api/tarefa/registro/{registro}",registro))
+                .andExpect(status().isInternalServerError());
     }
 }
