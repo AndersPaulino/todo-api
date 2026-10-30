@@ -97,4 +97,15 @@ public class TarefaControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void testFindByNomeTarefaInternalServerError() throws Exception {
+
+        String nome = "Tarefa-01";
+
+        when(tarefaService.findByNomeTarefa(nome)).thenThrow(new RuntimeException("Erro interno"));
+
+        mockMvc.perform(get("/api/tarefa/nome/{nome}", nome))
+                .andExpect(status().isInternalServerError());
+    }
+
 }
