@@ -159,4 +159,15 @@ public class TarefaControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").exists());
     }
+
+    @Test
+    void testFindByDiaRegistroNotFound()throws Exception {
+        Tarefa tarefa = new Tarefa();
+        LocalDate registro = LocalDate.of(2026,10,10);
+
+        when(tarefaService.findByDiaRegistro(registro)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/tarefa/registro/{registro}", registro))
+                .andExpect(status().isNotFound());
+    }
 }
