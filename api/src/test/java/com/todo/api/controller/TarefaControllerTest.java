@@ -15,10 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -241,5 +238,20 @@ public class TarefaControllerTest {
                 .andExpect(content().string("Registro cadastrado com sucesso!"));
 
         verify(tarefaService, times(1)).cadastrar(any(Tarefa.class));
+    }
+
+    @Test
+    void testCadastrarBadRequest() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doThrow(new IllegalArgumentException("Nome da tarefa inválido!"))
+                .when(tarefaService).cadastrar(any(Tarefa.class));
+
+        mockMvc.perform(post("/api/tarefa")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Nome da tarefa inválido!"));
     }
 }
