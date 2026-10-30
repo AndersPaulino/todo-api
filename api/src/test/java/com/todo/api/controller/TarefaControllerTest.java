@@ -334,4 +334,16 @@ public class TarefaControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("ID da tarefa inválido!"));
     }
+
+    @Test
+    void testDeletarInternalServerError() throws Exception {
+        Long id = 1L;
+
+        doThrow(new RuntimeException("Erro interno"))
+                .when(tarefaService).deletar(id);
+
+        mockMvc.perform(delete("/api/tarefa/desativar/{id}", id))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Erro ao desativar o registro!"));
+    }
 }
