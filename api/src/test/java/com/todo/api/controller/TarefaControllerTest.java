@@ -8,20 +8,29 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @WebMvcTest(TarefaController.class)
 public class TarefaControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockitoBean
     private TarefaService tarefaService;
@@ -193,5 +202,148 @@ public class TarefaControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").exists());
+    }
+
+    @Test
+    void testFindByDiaAtualizarNotFound() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        LocalDate atualizar = LocalDate.of(2026,10,10);
+
+        when(tarefaService.findByDiaAtualizar(atualizar)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/tarefa/atualizar/{atualizar}", atualizar))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testFindByDiaAtualizarInternalServerError() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        LocalDate atualizar = LocalDate.of(2026,10,10);
+
+        when(tarefaService.findByDiaAtualizar(atualizar)).thenThrow(new RuntimeException("Erro interno"));
+
+        mockMvc.perform(get("/api/tarefa/atualizar/{atualizar}",atualizar))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testCadastrarRetornoSucesso() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doNothing().when(tarefaService).cadastrar(any(Tarefa.class));
+
+        mockMvc.perform(post("/api/tarefa")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Registro cadastrado com sucesso!"));
+
+        verify(tarefaService, times(1)).cadastrar(any(Tarefa.class));
+    }
+
+    @Test
+    void testCadastrarBadRequest() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doThrow(new IllegalArgumentException("Nome da tarefa inválido!"))
+                .when(tarefaService).cadastrar(any(Tarefa.class));
+
+        mockMvc.perform(post("/api/tarefa")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Nome da tarefa inválido!"));
+    }
+
+    @Test
+    void testAtualizarRetornoSucesso() throws Exception {
+        Long id = 1L;
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doNothing().when(tarefaService).atualizar(eq(id), any(Tarefa.class));
+
+        mockMvc.perform(put("/api/tarefa/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Registro atualizado com sucesso!"));
+
+        verify(tarefaService, times(1))
+                .atualizar(eq(id), any(Tarefa.class));
+    }
+
+    @Test
+    void testAtualizarBadRequest() throws Exception {
+        Long id = 1L;
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doThrow(new IllegalArgumentException("ID da tarefa inválido!"))
+                .when(tarefaService).atualizar(eq(id), any(Tarefa.class));
+
+        mockMvc.perform(put("/api/tarefa/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("ID da tarefa inválido!"));
+    }
+
+    @Test
+    void testAtualizarInternalServerError() throws Exception {
+        Long id = 1L;
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doThrow(new RuntimeException("Erro interno"))
+                .when(tarefaService).atualizar(eq(id), any(Tarefa.class));
+
+        mockMvc.perform(put("/api/tarefa/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Erro ao atualizar o registro!"));
+    }
+
+    @Test
+    void testDeletarRetornoSucesso() throws Exception {
+        Long id = 1L;
+
+        doNothing().when(tarefaService).deletar(id);
+
+        mockMvc.perform(delete("/api/tarefa/desativar/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Registro desativado com sucesso!"));
+
+        verify(tarefaService, times(1)).deletar(id);
+    }
+
+    @Test
+    void testDeletarBadRequest() throws Exception {
+        Long id = 1L;
+
+        doThrow(new IllegalArgumentException("ID da tarefa inválido!"))
+                .when(tarefaService).deletar(id);
+
+        mockMvc.perform(delete("/api/tarefa/desativar/{id}", id))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("ID da tarefa inválido!"));
+    }
+
+    @Test
+    void testDeletarInternalServerError() throws Exception {
+        Long id = 1L;
+
+        doThrow(new RuntimeException("Erro interno"))
+                .when(tarefaService).deletar(id);
+
+        mockMvc.perform(delete("/api/tarefa/desativar/{id}", id))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Erro ao desativar o registro!"));
     }
 }
