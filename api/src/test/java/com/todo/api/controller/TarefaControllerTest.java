@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @WebMvcTest(TarefaController.class)
 public class TarefaControllerTest {
@@ -253,5 +254,24 @@ public class TarefaControllerTest {
                         .content(objectMapper.writeValueAsString(tarefa)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Nome da tarefa inválido!"));
+    }
+
+    @Test
+    void testAtualizarRetornoSucesso() throws Exception {
+        Long id = 1L;
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doNothing().when(tarefaService).atualizar(eq(id), any(Tarefa.class));
+
+        mockMvc.perform(put("/api/tarefa/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Registro atualizado com sucesso!"));
+
+        verify(tarefaService, times(1))
+                .atualizar(eq(id), any(Tarefa.class));
     }
 }
