@@ -8,20 +8,30 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(TarefaController.class)
 public class TarefaControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockitoBean
     private TarefaService tarefaService;
@@ -215,5 +225,21 @@ public class TarefaControllerTest {
 
         mockMvc.perform(get("/api/tarefa/atualizar/{atualizar}",atualizar))
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testCadastrarRetornoSucesso() throws Exception {
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doNothing().when(tarefaService).cadastrar(any(Tarefa.class));
+
+        mockMvc.perform(post("/api/tarefa")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Registro cadastrado com sucesso!"));
+
+        verify(tarefaService, times(1)).cadastrar(any(Tarefa.class));
     }
 }
