@@ -122,4 +122,16 @@ public class TarefaControllerTest {
                 .andExpect(jsonPath("$").exists());
     }
 
+    @Test
+    void testFindByAtivoNotFound() throws Exception {
+        Tarefa tarefa = new Tarefa();
+
+        boolean ativo = true;
+
+        when(tarefaService.findByAtivo(ativo)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/tarefa/ativo/{ativo}", ativo))
+                .andExpect(status().isNotFound());
+    }
+
 }
