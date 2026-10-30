@@ -291,4 +291,21 @@ public class TarefaControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("ID da tarefa inválido!"));
     }
+
+    @Test
+    void testAtualizarInternalServerError() throws Exception {
+        Long id = 1L;
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setNome("Tarefa-01");
+
+        doThrow(new RuntimeException("Erro interno"))
+                .when(tarefaService).atualizar(eq(id), any(Tarefa.class));
+
+        mockMvc.perform(put("/api/tarefa/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tarefa)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Erro ao atualizar o registro!"));
+    }
 }
