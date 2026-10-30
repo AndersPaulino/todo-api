@@ -134,4 +134,15 @@ public class TarefaControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void testFindByAtivoInternalServerError() throws Exception {
+        Tarefa tarefa = new Tarefa();
+
+        boolean ativo = true;
+
+        when(tarefaService.findByAtivo(ativo)).thenThrow(new RuntimeException("Erro interno"));
+
+        mockMvc.perform(get("/api/tarefa/ativo/{ativo}", ativo))
+                .andExpect(status().isInternalServerError());
+    }
 }
