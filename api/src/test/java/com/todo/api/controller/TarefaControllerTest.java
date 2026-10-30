@@ -86,4 +86,15 @@ public class TarefaControllerTest {
                 .andExpect(jsonPath("$").exists());
     }
 
+    @Test
+    void testFindByNomeTarefaNotFound() throws Exception {
+
+        String nome = "Tarefa-01";
+
+        when(tarefaService.findByNomeTarefa(nome)).thenReturn(null);
+
+        mockMvc.perform(get("/api/tarefa/nome/{nome}", nome))
+                .andExpect(status().isNotFound());
+    }
+
 }
