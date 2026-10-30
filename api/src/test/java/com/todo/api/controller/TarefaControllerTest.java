@@ -322,4 +322,16 @@ public class TarefaControllerTest {
 
         verify(tarefaService, times(1)).deletar(id);
     }
+
+    @Test
+    void testDeletarBadRequest() throws Exception {
+        Long id = 1L;
+
+        doThrow(new IllegalArgumentException("ID da tarefa inválido!"))
+                .when(tarefaService).deletar(id);
+
+        mockMvc.perform(delete("/api/tarefa/desativar/{id}", id))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("ID da tarefa inválido!"));
+    }
 }
